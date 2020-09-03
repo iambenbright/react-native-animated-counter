@@ -1,5 +1,11 @@
 import React, { useEffect, useRef, useCallback } from 'react';
-import { TextInput, StyleSheet, Dimensions, Animated } from 'react-native';
+import {
+  TextInput,
+  StyleSheet,
+  Dimensions,
+  Animated,
+  Easing,
+} from 'react-native';
 
 const styles = StyleSheet.create({
   counter: {
@@ -13,7 +19,7 @@ const styles = StyleSheet.create({
 // create animated textInput component
 const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 
-const Counter = ({ toValue, duration, isSpring }) => {
+const Counter = ({ toValue, duration }) => {
   const animatedValue = useRef(new Animated.Value(0)).current;
   const inputRef = useRef();
 
@@ -41,7 +47,11 @@ const Counter = ({ toValue, duration, isSpring }) => {
         });
       }
     });
-  });
+
+    return () => {
+      animatedValue.removeAllListeners();
+    };
+  }, [animatedValue]);
 
   return (
     <>

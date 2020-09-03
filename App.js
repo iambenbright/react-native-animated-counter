@@ -8,7 +8,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <StatusBar hidden={true} />
-      <Counter toValue={50} duration={3000} isSpring={false} />
+      <Counter toValue={500} duration={3000} />
     </View>
   );
 }
