@@ -105,22 +105,22 @@ const Counter = ({ toValue, duration }) => {
         underlineColorAndroid="transparent"
       />
       <TouchableOpacity
-        onClick={_restartAnimation}
+        onPress={_restartAnimation}
         style={styles.buttonContainer}
       >
         <Text style={styles.buttonText}>Restart</Text>
       </TouchableOpacity>
       <TouchableOpacity
-        onClick={_resumeAnimation}
+        onPress={_resumeAnimation}
         style={styles.buttonContainer}
       >
         <Text style={styles.buttonText}>Resume</Text>
       </TouchableOpacity>
-      <TouchableOpacity onClick={_stopAnimation} style={styles.buttonContainer}>
+      <TouchableOpacity onPress={_stopAnimation} style={styles.buttonContainer}>
         <Text style={styles.buttonText}>Stop</Text>
       </TouchableOpacity>
       <TouchableOpacity
-        onClick={_resetAnimation}
+        onPress={_resetAnimation}
         style={styles.buttonContainer}
       >
         <Text style={styles.buttonText}>Reset</Text>
