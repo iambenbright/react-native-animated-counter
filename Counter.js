@@ -29,11 +29,9 @@ const styles = StyleSheet.create({
 const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 
 const Counter = ({ toValue, duration }) => {
-  let resume = false;
-  let stop = false;
-  let reset = false;
   const animatedValue = useRef(new Animated.Value(0)).current;
   const inputRef = useRef();
+  let isComplete = false;
 
   const animation = useCallback(
     toValue => {
@@ -43,6 +41,8 @@ const Counter = ({ toValue, duration }) => {
         useNativeDriver: true,
       }).start(({ finished }) => {
         console.log(finished);
+        if (finished) isComplete = true;
+        else isComplete = false;
       });
     },
     [animatedValue]
@@ -72,6 +72,16 @@ const Counter = ({ toValue, duration }) => {
     animation(toValue);
   };
 
+  const _stopAnimation = () => {
+    animatedValue.stopAnimation();
+  };
+
+  const _resumeAnimation = () => {
+    !isComplete && animation(toValue);
+  };
+
+  const _resetAnimation = () => {};
+
   return (
     <>
       <AnimatedTextInput
@@ -87,13 +97,19 @@ const Counter = ({ toValue, duration }) => {
       >
         <Text style={styles.buttonText}>Restart</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.buttonContainer}>
+      <TouchableOpacity
+        onClick={_resumeAnimation}
+        style={styles.buttonContainer}
+      >
         <Text style={styles.buttonText}>Resume</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.buttonContainer}>
+      <TouchableOpacity onClick={_stopAnimation} style={styles.buttonContainer}>
         <Text style={styles.buttonText}>Stop</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.buttonContainer}>
+      <TouchableOpacity
+        onClick={_resetAnimation}
+        style={styles.buttonContainer}
+      >
         <Text style={styles.buttonText}>Reset</Text>
       </TouchableOpacity>
     </>
