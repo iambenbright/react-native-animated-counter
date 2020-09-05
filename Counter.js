@@ -32,6 +32,8 @@ const Counter = ({ toValue, duration }) => {
   const animatedValue = useRef(new Animated.Value(0)).current;
   const inputRef = useRef();
   let isComplete = false;
+  let currentValue = 0;
+  let isReseting = false;
 
   const animation = useCallback(
     toValue => {
@@ -40,7 +42,6 @@ const Counter = ({ toValue, duration }) => {
         duration,
         useNativeDriver: true,
       }).start(({ finished }) => {
-        console.log(finished);
         if (finished) isComplete = true;
         else isComplete = false;
       });
@@ -55,6 +56,7 @@ const Counter = ({ toValue, duration }) => {
     // listen to animated value changes and
     // update textInput text
     animatedValue.addListener(animated => {
+      currentValue = Math.round(animated.value);
       if (inputRef?.current) {
         inputRef.current.setNativeProps({
           text: String(Math.round(animated.value)),
@@ -68,19 +70,28 @@ const Counter = ({ toValue, duration }) => {
   }, [animatedValue]);
 
   const _restartAnimation = () => {
+    isReseting = false;
     animatedValue.setValue(0);
     animation(toValue);
   };
 
   const _stopAnimation = () => {
-    animatedValue.stopAnimation();
+    currentValue > 0 && currentValue < toValue && animatedValue.stopAnimation();
   };
 
   const _resumeAnimation = () => {
-    !isComplete && animation(toValue);
+    if (!isComplete && currentValue > 0) {
+      animatedValue.setValue(currentValue);
+      animation(isReseting ? 0 : toValue);
+    }
   };
 
-  const _resetAnimation = () => {};
+  const _resetAnimation = () => {
+    if (currentValue > 0) {
+      isReseting = true;
+      animation(0);
+    }
+  };
 
   return (
     <>
