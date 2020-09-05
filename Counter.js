@@ -35,16 +35,18 @@ const Counter = ({ toValue, duration }) => {
   let currentValue = 0;
   let isReseting = false;
 
+  const _animationCompleted = ({ finished }) => {
+    if (finished) isComplete = true;
+    else isComplete = false;
+  };
+
   const animation = useCallback(
     toValue => {
       Animated.timing(animatedValue, {
         toValue,
         duration,
         useNativeDriver: true,
-      }).start(({ finished }) => {
-        if (finished) isComplete = true;
-        else isComplete = false;
-      });
+      }).start(_animationCompleted);
     },
     [animatedValue]
   );
