@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   TextInput,
   StyleSheet,
@@ -29,15 +29,20 @@ const styles = StyleSheet.create({
 const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 
 const Counter = ({ toValue, duration }) => {
+  let resume = false;
+  let stop = false;
+  let reset = false;
   const animatedValue = useRef(new Animated.Value(0)).current;
   const inputRef = useRef();
 
   const animation = useCallback(
     toValue => {
-      return Animated.timing(animatedValue, {
+      Animated.timing(animatedValue, {
         toValue,
         duration,
         useNativeDriver: true,
+      }).start(({ finished }) => {
+        console.log(finished);
       });
     },
     [animatedValue]
@@ -45,7 +50,7 @@ const Counter = ({ toValue, duration }) => {
 
   useEffect(() => {
     // starts animation
-    animation(toValue).start();
+    animation(toValue);
 
     // listen to animated value changes and
     // update textInput text
@@ -62,6 +67,11 @@ const Counter = ({ toValue, duration }) => {
     };
   }, [animatedValue]);
 
+  const _restartAnimation = () => {
+    animatedValue.setValue(0);
+    animation(toValue);
+  };
+
   return (
     <>
       <AnimatedTextInput
@@ -71,8 +81,11 @@ const Counter = ({ toValue, duration }) => {
         editable={false}
         underlineColorAndroid="transparent"
       />
-      <TouchableOpacity style={styles.buttonContainer}>
-        <Text style={styles.buttonText}>StartOver</Text>
+      <TouchableOpacity
+        onClick={_restartAnimation}
+        style={styles.buttonContainer}
+      >
+        <Text style={styles.buttonText}>Restart</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.buttonContainer}>
         <Text style={styles.buttonText}>Resume</Text>
